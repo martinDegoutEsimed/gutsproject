@@ -1,5 +1,6 @@
 const sqlite = require('sqlite3')
 const fileExists = require('file-exists')
+const favicon = require('serve-favicon')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -36,4 +37,7 @@ app.use(morgan('dev'));
 seeder.init();
 
 require('./routes')(app, passport, auth)
+
+app.use(express.static('public'))
+app.use(favicon(__dirname + '/public/favicon.ico'));
 app.listen(3333)

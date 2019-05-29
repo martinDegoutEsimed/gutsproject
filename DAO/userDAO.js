@@ -10,22 +10,22 @@ module.exports = class UserDAO extends BaseDAO{
     hashPassword(password) {
         return bcrypt.hashSync(password, 10)  // 10 : cost factor -> + élevé = hash + sûr
     }
-    getByLogin(login, done) {
+    getByLogin(mail, done) {
         let user = null
-        this.db.each("SELECT * FROM user WHERE login = ?", [login],
-            (err, row) => { if (err == null) user = new User(row.login, row.passwordhash) },
+        this.db.each("SELECT * FROM user WHERE mail = ?", [mail],
+            (err, row) => { if (err == null) user = new User(row.mail, row.name ,row.passwordhash) },
             () => { done(user) }
         )
     }
     insert(user, done) {
-        const stmt = this.db.prepare("INSERT INTO user(login,passwordhash) VALUES (?, ?)")
-        stmt.run([user.login, this.hashPassword(user.password)], done)
+        const stmt = this.db.prepare("INSERT INTO user(mail,name,passwordhash) VALUES (?, ?, ?)")
+        stmt.run([user.mail, user.name, this.hashPassword(user.password)], done)
         stmt.finalize()
     }
 
     update(id, user, done) {
-        const stmt = this.db.prepare("UPDATE user SET login=?,passwordhash=? WHERE id=?")
-        stmt.run(user.login, this.hashPassword(user.password), id, done)
+        const stmt = this.db.prepare("UPDATE user SET mail=?,name=?,passwordhash=? WHERE id=?")
+        stmt.run(user.mail, user.name, this.hashPassword(user.password), id, done)
         stmt.finalize()
     }
 
@@ -37,7 +37,7 @@ module.exports = class UserDAO extends BaseDAO{
 
     getAll(done) {
         const users = []
-        this.db.each("SELECT id,login,passwordhash FROM user ORDER BY login",
+        this.db.each("SELECT id,mail,name,passwordhash FROM user ORDER BY name",
             (err, row) => {
                 if (err == null) {
                     let u = User.revive(row)

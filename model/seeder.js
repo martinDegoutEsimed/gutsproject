@@ -36,10 +36,10 @@ module.exports = class Seeder {
     }*/
 
     createUser(){
-        this.userDAO.db.run("CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT, passwordhash TEXT)",
+        this.userDAO.db.run("CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT, mail TEXT, name TEXT, passwordhash TEXT)",
             (err) => {
                 if (err == null) {
-                    this.userDAO.insert(new User("user1", "azerty"))
+                    this.userDAO.insert(new User("user1@mail.com", "user1", "azerty"))
                 }
         })
     }

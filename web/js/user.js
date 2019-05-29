@@ -2,8 +2,9 @@ console.log("Users");
 const serviceUrl = "http://localhost:3333/user";
 
 class User {
-    constructor(login, password) {
-        this.login = login;
+    constructor(mail, name, password) {
+        this.mail = mail;
+        this.name = name;
         this.password = password;
     }
 }
@@ -39,7 +40,8 @@ class UserController {
         this.api.get(id, (status, user) => {
             if (status === 200) {
                 $("#edit-user-id").value = id
-                $("#edit-user-login").value = user.login
+                $("#edit-user-mail").value = user.mail
+                $("#edit-user-name").value = user.name
                 $("#edit-user-password").value = user.password
                 this.dialogEditUser.modal('show')
             } else if (status === 404) {
@@ -49,7 +51,7 @@ class UserController {
     }
     updateUser() {
         this.api.update($("#edit-user-id").value,
-            new User($("#edit-user-login").value, $("#edit-user-password").value),
+            new User($("#edit-user-mail").value, $("#edit-user-name").value, $("#edit-user-password").value),
             (status) => {
                 this.displayAll()
                 this.dialogEditUser.modal('hide')
@@ -73,11 +75,12 @@ class UserController {
         })
     }
     addUser() {
-        this.api.insert(new User($('#add-user-login').value, $('#add-user-password').value), (status) => {
+        this.api.insert(new User($('#add-user-mail').value, $('#add-user-name').value, $('#add-user-password').value), (status) => {
             if (status === 200) {
                 this.displayAll()
                 this.dialogAddUser.modal('hide')
-                $('#add-user-login').value = ""
+                $('#add-user-mail').value = ""
+                $('#add-user-name').value = ""
                 $('#add-user-password').value = ""
             }
         })
@@ -92,7 +95,7 @@ class UserController {
             for (let user of users) {
                 user = Object.assign(new User(), user)
                 table += `<tr>
-                    <td>${user.login}</td>
+                    <td>${user.mail}</td><td>${user.name}</td>
                     <td><button class="btn btn-danger btn-sm" 
                                 onclick="ctrl.deleteUser(${user.id})">X</button>
                         <button class="btn btn-warning btn-sm" 

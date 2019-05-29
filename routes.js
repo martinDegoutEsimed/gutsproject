@@ -12,6 +12,10 @@ module.exports = (app, passport, auth) => {
         res.sendFile(web + req.path  + '.html')
     })
 
+    app.get(['/welcome', '/createAccount', '*.html'], (req, res) => {
+        res.sendFile(web + req.path + '.html')
+    })
+
     app.get(['/', '/index', '/users/*', '*.html'], auth.isLoggedInWeb, (req, res) => {
         res.sendFile(web + req.path + '.html')
     })
@@ -23,7 +27,7 @@ module.exports = (app, passport, auth) => {
 
     app.get('/logout', (req, res) => {
         req.logout()
-        res.redirect('/login')
+        res.redirect('/welcome')
     })
 
 

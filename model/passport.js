@@ -5,29 +5,29 @@ module.exports =  (passport, userDAO) => {
 
     // objet utilisateur -> identifiant de session
     passport.serializeUser((user, done) => {
-        done(null, user.login)
+        done(null, user.mail)
     })
 
     // identifiant de session -> objet utilisateur
-    passport.deserializeUser((login, done) => {
-        done(null, new User(login))
+    passport.deserializeUser((mail, done) => {
+        done(null, new User(mail))
     })
 
     passport.use('local-login', new LocalStrategy({
             // champs du formulaire login
-            usernameField: 'login',
+            usernameField: 'mail',
             passwordField: 'password',
             passReqToCallback: true
         },
-        (req, login, password, done) => {
+        (req, mail, password, done) => {
             /*if (login[0] === 'z') {
                 return done(null, new User(login))
             }
             return done(null, false)
             */
-            userDAO.getByLogin(login, (user) => {
+            userDAO.getByLogin(mail, (user) => {
                 if (user != null && userDAO.comparePassword(password, user.password)) {
-                    return done(null, new User(login))
+                    return done(null, new User(mail))
                 } else {
                     return done(null, false)
                 }

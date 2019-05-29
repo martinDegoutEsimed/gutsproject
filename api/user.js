@@ -14,9 +14,9 @@ module.exports = (app, userDao, auth) => {
     app.post("/user", auth.isLoggedInAPI, (req, res) => {
         const user = req.body
         console.log(req.body)
-        if (user.login === undefined
-            || user.password === undefined
-            || user.role) {
+        if (user.mail === undefined
+            || user.name === undefined
+            || user.password === undefined) {
             res.status(400).end()
             return
         }
@@ -41,9 +41,9 @@ module.exports = (app, userDao, auth) => {
 
     app.put("/user/:id", auth.isLoggedInAPI, (req, res) => {
         const user = req.body;
-        if (user.login === undefined
-            || user.password === undefined
-            || user.role) {
+        if (user.mail === undefined
+            || user.name === undefined
+            || user.password === undefined) {
             res.status(400).type('text/plain').end()
             return
         }
