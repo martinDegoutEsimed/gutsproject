@@ -4,14 +4,14 @@ module.exports = (app, userDao, auth) => {
         res.json(req.user)
     })
 
-    app.get("/userAll", auth.isLoggedInAPI, (req, res) => {
+    app.get("/userAll", (req, res) => {
         userDao.getAll((users) => {
             console.log(users)
             return res.json(users)
         })
     })
 
-    app.post("/user", auth.isLoggedInAPI, (req, res) => {
+    app.post("/user", (req, res) => {
         const user = req.body
         console.log(req.body)
         if (user.mail === undefined
