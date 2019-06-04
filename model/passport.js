@@ -57,10 +57,10 @@ module.exports =  (passport, userDAO) => {
         },
         isLoggedInWeb(req, res, next) {
             // autologin
-            if (defaultUser != null) {
+            /*if (defaultUser != null) {
                 req.user = defaultUser
                 return next()
-            }
+            }*/
             // si utilisateur authentifiĂ©, continuer
             if (req.isAuthenticated()) {
                 return next()

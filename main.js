@@ -8,6 +8,7 @@ const cookieSession = require('cookie-session')
 const passport = require('passport')
 const db = new sqlite.Database("./mabase.db")
 const UserDAO = require('./DAO/userDAO')
+const ChallengeDAO = require ('./DAO/challengeDAO')
 const morgan = require('morgan')
 const app = express()
 app.use(cookieParser()) // read cookies (obligatoire pour l'authentification)
@@ -18,9 +19,10 @@ app.use(bodyParser.json())
 const router = express.Router();
 
 userDAO = new UserDAO(db)
+challengeDAO = new ChallengeDAO(db)
 
 const Seeder = require('./model/seeder')
-const seeder = new Seeder(userDAO)
+const seeder = new Seeder(userDAO,challengeDAO)
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -28,7 +30,7 @@ app.use(passport.session())
 const auth = require('./model/passport.js')(passport, userDAO)
 
 require('./api/user')(app, userDAO, auth)
-
+require('./api/challenge')(app, challengeDAO, auth)
 
 app.use('/', router);
 
@@ -37,6 +39,7 @@ app.use(morgan('dev'));
 seeder.init();
 
 require('./routes')(app, passport, auth)
+
 
 app.use(express.static('public'))
 app.use(favicon(__dirname + '/public/favicon.ico'));

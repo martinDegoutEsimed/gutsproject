@@ -1,10 +1,12 @@
 const User = require('./user')
+const Challenge = require('./challenge');
 const tools = require("../web/js/tools2");
 
 module.exports = class Seeder {
 
-    constructor(userDAO, done){
-        this.userDAO = userDAO
+    constructor(userDAO, challengeDAO, done){
+        this.userDAO = userDAO;
+        this.challengeDAO = challengeDAO;
     }
 
     init(){
@@ -24,6 +26,7 @@ module.exports = class Seeder {
     }
 
     createTable(){
+        this.createChallenge();
         this.createUser();
     }
 
@@ -43,5 +46,26 @@ module.exports = class Seeder {
                 }
         })
     }
+
+    createChallenge(){
+        this.challengeDAO.db.run("CREATE TABLE challenge (" +
+            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            " title TEXT," +
+            " description TEXT," +
+            " likes INTEGER," +
+            " dateCreation TEXT," +
+            " author TEXT)",
+            (err) => {
+                if (err == null) {
+                    this.challengeDAO.db.serialize(() => {
+                        for (let i = 1; i < 3; i++) {
+                            this.challengeDAO.insert(
+                                new Challenge("Challenge" + i, "Just Do it", 0, "0" + i + "/05/2019", "user1"));
+                        }
+                    });
+                }
+            })
+    }
+
 
 };

@@ -1,12 +1,11 @@
 module.exports = (app, userDao, auth) => {
 
-    app.get("/user", auth.isLoggedInAPI, (req, res) => {
-        res.json(req.user)
-    })
+    app.get("/user/current", auth.isLoggedInAPI, (req, res) => {
+        res.status(200).jsonp(req.user).end();
+    });
 
     app.get("/userAll", (req, res) => {
         userDao.getAll((users) => {
-            console.log(users)
             return res.json(users)
         })
     })
@@ -22,12 +21,18 @@ module.exports = (app, userDao, auth) => {
         }
         userDao.insert(user, (fdg, err) => {
             if (err == null) {
-                res.status(200).type('text/plain').end()
+                return res.status(200).type('text/plain').end()
             } else {
                 res.status(500).end()
             }
         })
-    })
+    });
+
+    app.get("/user/:mail", auth.isLoggedInAPI, (req, res) => {
+        userDao.getByLogin(req.params.mail, (user) => {
+            return res.json(user)
+        })
+    });
 
     app.delete("/user/:id", auth.isLoggedInAPI, (req, res) => {
         userDao.delete(req.params.id, (err) => {
