@@ -12,11 +12,15 @@ module.exports = (app, passport, auth) => {
         res.sendFile(web + req.path  + '.html')
     })
 
-    app.get(['/welcome', '/createAccount', '*.html'], (req, res) => {
+    app.get(['*.html'], (req, res) => {
+        res.sendFile(web + req.path)
+    })
+
+    app.get(['/welcome', '/createAccount'], (req, res) => {
         res.sendFile(web + req.path + '.html')
     })
 
-    app.get(['/', '/index', '/users/*', '/challenges/*', '/proofs/*', '*.html'], auth.isLoggedInWeb, (req, res) => {
+    app.get(['/', '/index', '/users/*', '/challenges/*', '/comments/*'], auth.isLoggedInWeb, (req, res) => {
         console.log(req.user);
         res.sendFile(web + req.path + '.html')
     })

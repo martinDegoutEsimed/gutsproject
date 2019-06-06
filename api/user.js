@@ -28,8 +28,14 @@ module.exports = (app, userDao, auth) => {
         })
     });
 
-    app.get("/user/:mail", auth.isLoggedInAPI, (req, res) => {
+    app.get("/user/mail/:mail", auth.isLoggedInAPI, (req, res) => {
         userDao.getByLogin(req.params.mail, (user) => {
+            return res.json(user)
+        })
+    });
+
+    app.get("/user/username/:name", auth.isLoggedInAPI, (req, res) => {
+        userDao.getByUserName(req.params.name, (user) => {
             return res.json(user)
         })
     });
@@ -44,7 +50,7 @@ module.exports = (app, userDao, auth) => {
         })
     })
 
-    app.put("/user/:id", auth.isLoggedInAPI, (req, res) => {
+    app.put("/user/:mail", auth.isLoggedInAPI, (req, res) => {
         const user = req.body;
         if (user.mail === undefined
             || user.name === undefined
@@ -52,9 +58,17 @@ module.exports = (app, userDao, auth) => {
             res.status(400).type('text/plain').end()
             return
         }
-        userDao.update(req.params.id, user, (err) => {
+        userDao.update(req.params.mail, user, (err) => {
             if (err == null) {
-                res.status(200).type('text/plain').end()
+                req.login(user, (err)=> {
+                    if(err){
+                        res.status(500).type('text/plain').end()
+                        return
+                    }
+                    res.status(200).type('text/plain').end()
+                    return
+                })
+
             } else {
                 res.status(500).end()
             }

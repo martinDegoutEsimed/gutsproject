@@ -2,7 +2,8 @@ console.log("Users");
 const serviceUrlUser = "http://localhost:3333/user";
 
 class User {
-    constructor(mail, name, password) {
+    constructor(id, mail, name, password) {
+        this.id = id;
         this.mail = mail;
         this.name = name;
         this.password = password;
@@ -10,8 +11,8 @@ class User {
 }
 
 class UserService {
-    update(id, user, done) {
-        ajax("PUT", serviceUrlUser + "/" + id, done, user)
+    update(mail, user, done) {
+        ajax("PUT", serviceUrlUser + "/" + mail, done, user)
     }
     delete(id, done) {
         ajax("DELETE", serviceUrlUser + "/" + id, done)
@@ -20,7 +21,10 @@ class UserService {
         ajax("POST", serviceUrlUser, done, user)
     }
     get(mail, done) {
-        ajax("GET", serviceUrlUser + "/" + mail, done)
+        ajax("GET", serviceUrlUser + "/mail/" + mail, done)
+    }
+    getByName(name, done) {
+        ajax("GET", serviceUrlUser + "/username/" + name, done)
     }
     getAll(done) {
         ajax("GET", serviceUrlUser + "all", done)
@@ -33,10 +37,20 @@ class UserService {
 class UserController {
     constructor() {
         this.api = new UserService()
+        this.pageLocation = new URL(window.location.href);
         this.tableUsers = $('#table-users')
+        this.tableChallenges4User = $('#table-challenges-user')
         this.dialogDeleteUser = jQuery('#dialog-delete-user')
         this.dialogEditUser = jQuery('#dialog-edit-user')
-        //this.displayUser()
+        this.displayUser()
+    }
+
+    findParameterInUrl(parameter) {
+        if (typeof parameter === "undefined") {
+            throw "parameter is required";
+        }
+
+        return this.pageLocation.searchParams.get(parameter);
     }
 
     getByMail(mail, callback){
@@ -50,27 +64,42 @@ class UserController {
         })
     }
 
-    displayUser(){
-        console.log("displayUser")
-        this.getCurrentUser((user) => {
-            this.getByMail(user.mail, (userFinal) => {
-                $('#userName').innerHTML = `${userFinal.name}`;
-                $('#userMail').innerHTML = `${userFinal.mail}`;
-            })
+    getByName(name, callback){
+        this.api.getByName(name, (status, user) =>{
+            if(status === 200){
+                callback(user);
+            }
+            else {
+                console.log(status)
+            }
         })
     }
 
-    editUser(id) {
-        this.api.get(id, (status, user) => {
-            if (status === 200) {
-                $("#edit-user-id").value = id
-                $("#edit-user-mail").value = user.mail
-                $("#edit-user-name").value = user.name
-                $("#edit-user-password").value = user.password
+    displayUser(){
+        let userName = this.findParameterInUrl("username")
+        if(ToolsFront.empty(userName)){
+            this.getCurrentUser((usr) => {
+                this.getByMail(usr.mail, (userFinal) => {
+                    $('#userName').innerHTML = `${userFinal.name}`;
+                    $('#userMail').innerHTML = `${userFinal.mail}`;
+                })
+            })
+            return
+        }
+        this.getByName(userName, (userFinal) => {
+            $('#buttonEditProfile').style.display = 'none';
+            $('#userName').innerHTML = `${userFinal.name}`;
+            $('#userMail').innerHTML = `${userFinal.mail}`;
+        })
+    }
+
+    editUser() {
+        this.getCurrentUser((user1) => {
+            this.getByMail(user1.mail, (user2) => {
+                $("#edit-user-mail").value = user2.mail
+                $("#edit-user-name").value = user2.name
                 this.dialogEditUser.modal('show')
-            } else if (status === 404) {
-                alert("user inconnu")
-            }
+            })
         })
     }
 
@@ -87,13 +116,19 @@ class UserController {
     }
 
     updateUser() {
-        this.api.update($("#edit-user-id").value,
-            new User($("#edit-user-mail").value, $("#edit-user-name").value, $("#edit-user-password").value),
-            (status) => {
-                this.displayAll()
-                this.dialogEditUser.modal('hide')
+        this.getCurrentUser((user1) => {
+            this.getByMail(user1.mail, (user2) => {
+                this.api.update(user1.mail,
+                    new User($("#edit-user-mail").value, $("#edit-user-name").value, $("#edit-user-password").value),
+                    (status) => {
+                        this.displayUser()
+                        $("#edit-user-password").value = ""
+                        this.dialogEditUser.modal('hide')
+                    })
+                return false
             })
-        return false
+        })
+
     }
     deleteUser(id) {
         this.api.get(id, (status, user) => {
@@ -120,6 +155,18 @@ class UserController {
             }
         })
         return false
+    }
+
+    displayPostedChallenges(){
+        ctrlChallenge.getAllFromUser($('#userName').innerHTML)
+    }
+
+    displayFollowChallenges(){
+
+    }
+
+    displayDoneChallenges(){
+
     }
 
     displayAll() {

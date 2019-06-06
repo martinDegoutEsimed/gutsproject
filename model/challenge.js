@@ -1,10 +1,12 @@
 module.exports = class Challenge {
-    constructor(title, description, likes, dateCreation, author) {
+    constructor(title, description, likes, dateCreation, author, done, hidden) {
         this.title = title
         this.description = description
         this.likes = likes
         this.dateCreation = dateCreation
         this.author = author
+        this.done = done
+        this.hidden = hidden
     }
 
     static revive(json) {
