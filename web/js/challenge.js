@@ -42,8 +42,14 @@ class ChallengeService {
     getAll(done) {
         ajax("GET", serviceUrl, done)
     }
+    noDone(done){
+        ajax("GET", serviceUrl + "NoDone", done)
+    }
     getAllByLikes(done){
         ajax("GET", serviceUrl + "Likes", done)
+    }
+    likesNoDone(done){
+        ajax("GET", serviceUrl + "LikesNoDone", done)
     }
     like(id, challenge, done){
         ajax("PUT", serviceUrl + "/like/" + id, done, challenge)
@@ -59,9 +65,11 @@ class ChallengeController {
         this.tableChallenges = $('#table-challenges')
         this.tableChallenges4User = $('#table-challenges-user')
         this.dialogAddChallenge = jQuery('#dialog-add-challenge')
+        this.checkBoxDone = jQuery('#checkDone')
         this.curentUserName = "";
-        this.displayAll()
+        this.displayNoDone()
         this.currentFilter = "date";
+        this.doneFilter = this.checkBoxDone.val();
     }
     addChallenge() {
         ctrlUser.getCurrentUser((user)=> {
@@ -151,6 +159,7 @@ class ChallengeController {
 
     getAllFromUser(mail){
         this.api.getAllFromUser(mail, (status, challenges)=> {
+            //<a id="buttonHide" onclick="ctrlChallenge.hideFromUser(${challenge.id})" class="btn btn-secondary">👁</a>
             let table = ""
             for (let challenge of challenges) {
                 challenge = Object.assign(new Challenge(), challenge)
@@ -192,7 +201,7 @@ class ChallengeController {
                 ${deleteText} <br>
               </div>
               <div class="card-footer text-muted">
-                <a id="buttonHide" onclick="ctrlChallenge.hideFromUser(${challenge.id})" class="btn btn-secondary">👁</a>
+                
                 <a id="buttonLike" onclick="ctrlChallenge.likeFromUser(${challenge.id})" class="btn btn-success float-left">❤</a>
                 <a id="buttonComment" onclick="ctrlComment.getAllFromChallenge(${challenge.id})" class="btn btn-primary float-left">💬</a>
                 <p class="float-right">Posté le ${challenge.dateCreation.toLocaleString()}</p>
@@ -205,6 +214,26 @@ class ChallengeController {
             }
             this.tableChallenges4User.innerHTML = table;
         })
+    }
+
+    changeDisplayDone(){
+        if(this.currentFilter === "like"){
+            if(this.checkBoxDone === true){
+                this.displayAllByLikes()
+            }
+            else{
+                this.displayLikesNoDone()
+            }
+        }
+        else if(this.currentFilter === "date"){
+            if(this.checkBoxDone === true){
+                this.displayAll()
+            }
+            else{
+                this.displayNoDone()
+            }
+        }
+
     }
 
     displayAllByLikes() {
@@ -231,6 +260,88 @@ class ChallengeController {
                   </div>
                   <div class="card-body">
                     Posté par : <a href="users/user.html?username=${challenge.author}" >${challenge.author}</a>  <br>
+                    ${challenge.description} <br>
+                    ${challenge.likes} likes <br>
+                    ${textDone} <br>
+                  </div>
+                  <div class="card-footer text-muted">
+                    <a id="buttonLike" onclick="ctrlChallenge.like(${challenge.id})" class="btn btn-success float-left">❤</a>
+                    <a id="buttonComment" onclick="ctrlComment.getAllFromChallenge(${challenge.id})" class="btn btn-primary float-left">💬</a>
+                    <p class="float-right">Posté le ${challenge.dateCreation.toLocaleString()}</p>
+                  </div>
+                  
+                </div>
+                <br>`
+            }
+            this.tableChallenges.innerHTML = table
+        })
+    }
+
+    displayLikesNoDone(){
+        this.currentFilter = "like"
+        this.api.likesNoDone((status, challenges) => {
+            if (status !== 200) {
+                return
+            }
+            let table = "";
+            for (let challenge of challenges) {
+                challenge = Object.assign(new Challenge(), challenge)
+                let textDone = ""
+                if (challenge.done === 0) {
+                    textDone = "❌ Pas encore réalisé ! ❌"
+                }
+                else if (challenge.done === 1){
+                    textDone = "🏆 Défi réalisé ! 🏆"
+                }
+                table +=
+                    `<br>
+                <div class="card text-center">
+                  <div class="card-header">
+                    ${challenge.title}
+                  </div>
+                  <div class="card-body">
+                    Posté par : <a href="users/user.html?username=${challenge.author}" >${challenge.author}</a> <br>
+                    ${challenge.description} <br>
+                    ${challenge.likes} likes <br>
+                    ${textDone} <br>
+                  </div>
+                  <div class="card-footer text-muted">
+                    <a id="buttonLike" onclick="ctrlChallenge.like(${challenge.id})" class="btn btn-success float-left">❤</a>
+                    <a id="buttonComment" onclick="ctrlComment.getAllFromChallenge(${challenge.id})" class="btn btn-primary float-left">💬</a>
+                    <p class="float-right">Posté le ${challenge.dateCreation.toLocaleString()}</p>
+                  </div>
+                  
+                </div>
+                <br>`
+            }
+            this.tableChallenges.innerHTML = table
+        })
+    }
+
+    displayNoDone(){
+        this.currentFilter = "date"
+        this.api.noDone((status, challenges) => {
+            if (status !== 200) {
+                return
+            }
+            let table = "";
+            for (let challenge of challenges) {
+                challenge = Object.assign(new Challenge(), challenge)
+                let textDone = ""
+                if (challenge.done === 0) {
+                    textDone = "❌ Pas encore réalisé ! ❌"
+                }
+                else if (challenge.done === 1){
+                    textDone = "🏆 Défi réalisé ! 🏆"
+                }
+                table +=
+                    `<br>
+                <div class="card text-center">
+                  <div class="card-header">
+                    ${challenge.title}
+                  </div>
+                  <div class="card-body">
+                    Posté par : <a href="users/user.html?username=${challenge.author}" >${challenge.author}</a> <br>
                     ${challenge.description} <br>
                     ${challenge.likes} likes <br>
                     ${textDone} <br>

@@ -119,7 +119,7 @@ class UserController {
         this.getCurrentUser((user1) => {
             this.getByMail(user1.mail, (user2) => {
                 this.api.update(user1.mail,
-                    new User($("#edit-user-mail").value, $("#edit-user-name").value, $("#edit-user-password").value),
+                    new User(user2.id, $("#edit-user-mail").value, $("#edit-user-name").value, $("#edit-user-password").value),
                     (status) => {
                         this.displayUser()
                         $("#edit-user-password").value = ""
@@ -146,7 +146,7 @@ class UserController {
         })
     }
     addUser() {
-        this.api.insert(new User($('#add-user-mail').value, $('#add-user-name').value, $('#add-user-password').value), (status) => {
+        this.api.insert(new User(null, $('#add-user-mail').value, $('#add-user-name').value, $('#add-user-password').value), (status) => {
             if (status === 200) {
                 window.location.href = "/login";
                 $('#add-user-mail').value = ""

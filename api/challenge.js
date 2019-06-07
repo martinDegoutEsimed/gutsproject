@@ -12,6 +12,18 @@ module.exports = (app, dao, auth) => {
         })
     })
 
+    app.get("/challengeNoDone", (req, res) =>{
+        dao.noDoneByDate((challenges)=>{
+            return res.json(challenges)
+        })
+    })
+
+    app.get("/challengeLikesNoDone", (req, res) =>{
+        dao.noDoneByLikes((challenges)=>{
+            return res.json(challenges)
+        })
+    })
+
     app.get("/challenge/:mail", (req, res) => {
         dao.getAllByUser(req.params.mail, (challenges)=> {
             return res.json(challenges)

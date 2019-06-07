@@ -86,6 +86,40 @@ module.exports = class ChallengeDAO extends BaseDAO{
             })
     }
 
+    noDoneByDate(done){
+        const challenges = []
+        this.db.each("SELECT id,title,description,likes,dateCreation,author,done,hidden FROM challenge WHERE hidden=? AND done=? ORDER BY dateCreation DESC",[0,0],
+            (err, row) => {
+                if (err == null) {
+                    let c = Challenge.revive(row)
+                    c.id = row.id
+                    challenges.push(c)
+                }
+            },
+            (err) => {
+                if (err == null && done) {
+                    done(challenges)
+                }
+            })
+    }
+
+    noDoneByLikes(done){
+        const challenges = []
+        this.db.each("SELECT id,title,description,likes,dateCreation,author,done,hidden FROM challenge WHERE hidden=? AND done=? ORDER BY likes DESC",[0,0],
+            (err, row) => {
+                if (err == null) {
+                    let c = Challenge.revive(row)
+                    c.id = row.id
+                    challenges.push(c)
+                }
+            },
+            (err) => {
+                if (err == null && done) {
+                    done(challenges)
+                }
+            })
+    }
+
     getAllByLikes(done){
         const challenges = []
         this.db.each("SELECT id,title,description,likes,dateCreation,author,done,hidden FROM challenge WHERE hidden=? ORDER BY likes DESC",[0],
