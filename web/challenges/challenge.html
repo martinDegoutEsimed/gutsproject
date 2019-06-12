@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Défis</title>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/bootstrap4-neon-glow.css">
+    <link rel="stylesheet" href="/index.css">
+
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Défis</h3>
+        </div>
+        <div class="card-body">
+            <div id="contenu">
+                <div class="row">
+                    <div class="col-6">
+                        <a href="/"><- Retour à l'acceuil</a>
+                        <br>
+                        <button type="button" class="btn btn-primary"
+                                data-toggle="modal" data-target="#dialog-add-challenge">
+                           Lancer un défi !
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-striped table-hover table-condensed">
+                            <thead><tr><td>Titre</td><td>Description</td><td>Likes</td><td>Date Création</td><td>Créateur</td></tr></thead>
+                            <tbody id="table-challenges"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/tools.js"></script>
+<script src="/user.js"></script>
+<script src="/challenge.js"></script>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Créer Compte</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/bootstrap4-neon-glow.css">
+    <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+<img class="center" src="/guts_logo.png" alt="guts_logo.png" />
+<form id="form-add-user" >
+    <div class="form-group">
+        <label for="add-user-mail">Mail: </label>
+        <input type="email" class="form-control" id="add-user-mail"
+               required placeholder="Veuillez saisir un mail"/>
+    </div>
+    <div class="form-group">
+        <label for="add-user-name">Pseudo: </label>
+        <input type="text" class="form-control" id="add-user-name"
+               required placeholder="Veuillez saisir un pseudo"/>
+    </div>
+    <div class='form-group'>
+        <label for="add-user-password">Mdp: </label>
+        <input type="password" class="form-control" id="add-user-password"
+               required placeholder="Veuillez saisir un mot de passe"/>
+    </div>
+    <input type="button" onclick="ctrlUser.addUser()" class="btn btn-primary" value="Ajouter">
+</form>
+<script src="/ToolsFront.js"></script>
+<script src="/tools.js"></script>
+<script src="/user.js"></script>
+</body>
+</html>
